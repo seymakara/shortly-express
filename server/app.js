@@ -5,6 +5,7 @@ const partials = require('express-partials');
 const bodyParser = require('body-parser');
 const Auth = require('./middleware/auth');
 const models = require('./models');
+const user = require('./models/user')
 
 const app = express();
 
@@ -78,7 +79,10 @@ app.post('/links',
 // Write your authentication routes here
 /************************************************************/
 
+app.post('/signup', (req, res) => {
+  console.log(req.body) 
 
+})
 
 /************************************************************/
 // Handle the code parameter route last - if all other routes fail
