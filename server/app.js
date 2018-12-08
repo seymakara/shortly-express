@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const Auth = require('./middleware/auth');
 const models = require('./models');
 const user = require('./models/user');
+const model = require('./models/model');
 
 const app = express();
 
@@ -87,11 +88,32 @@ app.post('/signup', (req, res) => {
     })
     .catch((err) => {
       if (err.errno === 1062) {
-        console.log('This username is already in use. Please choose another one.');
+        console.log(`This username is already in use. Please choose another one. Error: ${err.errno}`);
         res.redirect('/signup');
       } else {
         throw err;
       }
+    });
+});
+
+app.post('/login', (req, res) => {
+  user
+    .getAll({username: req.body.username})
+    .then((userInfo) => {
+      let info = userInfo[0];
+      if (userInfo.length === 0) {
+        res.redirect('/login');
+      } else {
+        let boolean = user.compare(req.body.password, info.password, info.salt);
+        if (boolean) {
+          res.redirect('/');
+        } else {
+          res.redirect('/login');
+        }
+      }
+    })
+    .catch((err) => {
+      console.log('error', err);
     });
 });
 
